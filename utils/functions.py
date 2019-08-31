@@ -7,10 +7,11 @@ from scipy.interpolate import interp1d
 from config import *
 from .bin import median_bin
 from .fold import fold
+import math
 
 
 def almost_same(x, y):
-    return np.abs(x - y) <= 1e-6
+    return math.fabs(x - y) <= 1e-6
 
 
 def main_tag(func):
@@ -57,6 +58,7 @@ def choose_from_center(time, val_center, val_width):
     lo = np.searchsorted(time, val_center - half_width)
     lo, hi = int(lo), int(hi)
     return lo, hi
+
 
 # sigma_clip is not good (by experiment)
 def sigma_clip(time, flux, sigma=3.0):

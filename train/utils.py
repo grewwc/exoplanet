@@ -404,7 +404,9 @@ def save_train_test_data(rootdir,
                          train_y,
                          g_test_x,
                          l_test_x,
-                         test_y):
+                         test_y,
+                         train_features=None,
+                         test_features=None):
     for data in (g_train_x, l_train_x, g_test_x, l_test_x):
         assert len(data.shape) == 3 and data.shape[-1] == 1
 
@@ -412,19 +414,32 @@ def save_train_test_data(rootdir,
         os.makedirs(rootdir)
     with save_ctx(path.join(rootdir, 'global_train_x.txt')):
         np.savetxt(path.join(rootdir, 'global_train_x.txt'),
-                   g_train_x.reshape(g_train_x.shape[:-1]), fmt='%.6f')
+                   g_train_x, fmt='%.6f')
 
     with save_ctx(path.join(rootdir, 'local_train_x.txt')):
         np.savetxt(path.join(rootdir, 'local_train_x.txt'),
-                   l_train_x.reshape(l_train_x.shape[:-1]), fmt='%.6f')
+                   l_train_x, fmt='%.6f')
+
+    if train_features is not None:
+        with save_ctx(path.join(rootdir, 'train_features.txt')):
+            np.savetxt(path.join(rootdir, 'train_features.txt'),
+                       train_features, fmt='%.6f')
+
     with save_ctx(path.join(rootdir, 'train_y.txt')):
         np.savetxt(path.join(rootdir, 'train_y.txt'), train_y, fmt='%d')
 
     with save_ctx(path.join(rootdir, 'global_test_x.txt')):
         np.savetxt(path.join(rootdir, 'global_test_x.txt'),
-                   g_test_x.reshape(g_test_x.shape[:-1]), fmt='%.6f')
+                   g_test_x, fmt='%.6f')
+
     with save_ctx(path.join(rootdir, 'local_test_x.txt')):
         np.savetxt(path.join(rootdir, 'local_test_x.txt'),
-                   l_test_x.reshape(l_test_x.shape[:-1]), fmt='%.6f')
+                   l_test_x, fmt='%.6f')
+
+    if test_features is not None:
+        with save_ctx(path.join(rootdir, 'test_features.txt')):
+            np.savetxt(path.join(rootdir, 'test_features.txt'),
+                       test_features, fmt='%.6f')
+
     with save_ctx(path.join(rootdir, 'test_y.txt')):
         np.savetxt(path.join(rootdir, 'test_y.txt'), test_y, fmt='%d')

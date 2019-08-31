@@ -107,26 +107,26 @@ def get_time_flux_by_ID(kepid,
     files = sorted(files)
     for file in files:
         file = os.path.join(root_dir, file)
-        hdu = fits.open(file)
-        cur_quarter = hdu[0].header['quarter']
-        flux = hdu[1].data.PDCSAP_FLUX
-        time = hdu[1].data.TIME
-        # remove nan
-        finite_mask = np.isfinite(flux)
-        time = time[finite_mask]
-        flux = flux[finite_mask]
-        flux /= np.median(flux)
+        with fits.open(file) as hdu:
+            cur_quarter = hdu[0].header['quarter']
+            flux = hdu[1].data.PDCSAP_FLUX
+            time = hdu[1].data.TIME
+            # remove nan
+            finite_mask = np.isfinite(flux)
+            time = time[finite_mask]
+            flux = flux[finite_mask]
+            flux /= np.median(flux)
 
-        if quarter is not None and str(cur_quarter) == str(quarter):
-            return time, flux
+            if quarter is not None and str(cur_quarter) == str(quarter):
+                return time, flux
 
-        ##################################
-        # later add remove outliers ???  #
-        #                                #
-        ##################################
+            ##################################
+            # later add remove outliers ???  #
+            #                                #
+            ##################################
 
-        all_time.append(time)
-        all_flux.append(flux)
+            all_time.append(time)
+            all_flux.append(flux)
 
     # quarter is beyond [1,17]
     if quarter is not None:
