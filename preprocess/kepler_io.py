@@ -155,6 +155,7 @@ def drop_unknown_label():
         return
     data = pd.read_csv(csv_path, comment='#')
     data = data[data['av_training_set'] != 'UNK']
+    data.dropna(axis=1, inplace=True)
     data.to_csv(csv_clean_path, index=False)
 
 

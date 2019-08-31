@@ -20,6 +20,16 @@ class _Counter:
 
 @_Counter
 def res_block(x, filters, kernel_size, strides=1, name=None):
+    """
+    :param x:
+    :param filters:
+    :param kernel_size:
+    :param strides:
+    :param name:
+    :return:
+
+    strides != 1 res block should be put into the last layer
+    """
     y = x
     l2 = 1e-4
     y = keras.layers.Conv1D(
@@ -62,13 +72,14 @@ def get_global_model():
 
     x = res_block(x, 64, 3, 2, name=global_name)
 
-    x = res_block(x, 128, 3, 2, name=global_name)
+    x = res_block(x, 128, 5, 2, name=global_name)
 
     x = res_block(x, 256, 5, 2, name=global_name)
     # x = res_block(x, 256, 5, 2, name=global_name)
 
     x = res_block(x, 512, 5, 2, name=global_name)
-    # x = res_block(x, 512, 5, 2, name=global_name)
+    # x = res_block(x, 512, 5, 1, name=global_name)
+    # x = res_block(x, 512, 5, 1, name=global_name)
     # x = res_block(x, 512, 5, 2, name=global_name)
 
     # x = keras.layers.AveragePooling1D(2)(x)
@@ -85,17 +96,17 @@ def get_local_model():
     inputs = keras.layers.Input(shape=[201, 1])
     x = inputs
 
-    x = res_block(x, 8, 3, 2, local_name)
+    # x = res_block(x, 8, 3, 2, local_name)
 
     x = res_block(x, 16, 3, 2, local_name)
 
-    x = res_block(x, 32, 3, 2, local_name)
+    x = res_block(x, 32, 5, 2, local_name)
 
-    x = res_block(x, 64, 5, 2, local_name)
+    x = res_block(x, 64, 7, 2, local_name)
 
-    x = res_block(x, 128, 5, 2, local_name)
-    x = res_block(x, 128, 5, 2, local_name)
-    x = res_block(x, 128, 5, 2, local_name)
+    x = res_block(x, 128, 7, 2, local_name)
+    # x = res_block(x, 128, 7, 1, local_name)
+    # x = res_block(x, 128, 7, 1, local_name)
 
     print(f"{res_block._count - 1} local res_blocks")
 

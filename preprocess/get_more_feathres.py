@@ -3,11 +3,18 @@ import os
 import pandas as pd
 import numpy as np
 from clean_utils.normalization import norm_kepid
+import warnings
+
+warnings.filterwarnings('error')
 
 
 def get_more_features(columns=None):
     if columns is None:
-        columns = ['tce_period', 'tce_impact', 'tce_duration', 'tce_depth']
+        columns = ['tce_period', 'tce_impact',
+                   'tce_duration', 'tce_depth',
+                   'tce_ror', 'tce_num_transits',
+                   'tce_model_snr', 'tce_model_chisq', 'tce_robstat',
+                   'tce_prad', 'tce_sradius']
 
     fname = os.path.join(csv_folder, csv_name_drop_unk)
     df24 = pd.read_csv(fname, comment='#')
@@ -50,7 +57,10 @@ def write_more_features(columns=None):
 def _normalize(values):
     mean = np.mean(values, axis=0)
     std = np.std(values, axis=0)
-    values = (values - mean) / std
+    try:
+        values = (values - mean) / std
+    except Warning as e:
+        print(e, std)
     return values
 
 

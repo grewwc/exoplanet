@@ -18,7 +18,7 @@ def get_model(learning_rate=1e-3, dense=None):
     # add one dense layer to get only 1 output
 
     x2 = dense.get_layer("last_dropout")
-    scale = 0.5
+    scale = 1.0
     x2 = keras.layers.Lambda(lambda x: x * scale)(x2.output)
     # scale the dense layer by "scale"
     x2 = keras.layers.Dense(units=1)(x2)
