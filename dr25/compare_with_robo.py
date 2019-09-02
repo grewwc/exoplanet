@@ -67,6 +67,8 @@ def compare(threashhold=0.5):
 
     kepids_and_plnt = df[['kepid', 'tce_plnt_num', 'pred_class']]
 
+    m = load_model()
+
     seen = {}
     _same = 0
     _total = 0
