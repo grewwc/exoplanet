@@ -66,11 +66,7 @@ def compare(threashhold=0.5):
     df = pd.read_csv(fname)
 
     kepids_and_plnt = df[['kepid', 'tce_plnt_num', 'pred_class']]
-    try:
-        m = load_model()
-    except:
-        print("error loading")
-    os._exit(-1)
+
     seen = {}
     _same = 0
     _total = 0
