@@ -1,10 +1,7 @@
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, BatchNormalization, Conv1D, MaxPooling1D, \
-    Flatten, Activation, Dropout
-
-import tensorflow.keras.backend as K
 import os
+
+import tensorflow as tf
+import tensorflow.keras.backend as K
 
 
 def __get_optimizer(learning_rate):
@@ -34,7 +31,6 @@ def save_model(model, path=None):
 def load_model(path=None):
     path = os.path.join(os.path.dirname(__file__),
                         "train.h5") if path is None else path
-    root_dir = os.path.dirname(path)
 
     try:
         print(f'loading model from {path}')

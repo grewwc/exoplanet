@@ -22,30 +22,30 @@ def _write_output():
     outfile = path.join(path.dirname(__file__), 'result.txt')
 
     with open(outfile, 'w') as f:
-        f.write(f"precision:  {_same/_total * 100:.3f}%\n")
-        f.write('\n' + '~'*80 + '\n')
+        f.write(f"precision:  {_same / _total * 100:.3f}%\n")
+        f.write('\n' + '~' * 80 + '\n')
         f.write(f"differences: {len(_all_diff)}\n")
         # f.writelines(all_diff)
         _write_list(f, _all_diff)
 
-        f.write('\n' + '~'*80 + '\n')
+        f.write('\n' + '~' * 80 + '\n')
         f.write(f'false positives: {len(_all_fp)}\n')
         # f.writelines(all_fp)
         _write_list(f, _all_fp)
 
-        f.write('\n' + '~'*80 + '\n')
+        f.write('\n' + '~' * 80 + '\n')
         f.write(f'false negtives: {len(_all_fn)}\n')
         # f.writelines(all_fn)
         _write_list(f, _all_fn)
 
-        f.write('\n' + '~'*80 + '\n')
+        f.write('\n' + '~' * 80 + '\n')
         f.write(
             f'cannot generate local views: {len(_wrong_local_view_kepids)}\n')
         # f.writelines(wrong_local_view_kepids)
         _write_list(f, _wrong_local_view_kepids)
 
-        f.write('\n' + '~'*80 + '\n')
-        f.write(f'same / total:  {_same/_total * 100:.3f}%\n')
+        f.write('\n' + '~' * 80 + '\n')
+        f.write(f'same / total:  {_same / _total * 100:.3f}%\n')
 
 
 def sig_handler(sig, frame):
@@ -66,8 +66,11 @@ def compare(threashhold=0.5):
     df = pd.read_csv(fname)
 
     kepids_and_plnt = df[['kepid', 'tce_plnt_num', 'pred_class']]
-    m = load_model()
-
+    try:
+        m = load_model()
+    except:
+        print("error loading")
+    os._exit(-1)
     seen = {}
     _same = 0
     _total = 0
@@ -105,7 +108,7 @@ def compare(threashhold=0.5):
 
             _total += 1
             print(
-                f"{count}/{len(kepids_and_plnt)},  precision: {_same/_total * 100:.3f}%")
+                f"{count}/{len(kepids_and_plnt)},  precision: {_same / _total * 100:.3f}%")
             count += 1
         except:
             _wrong_local_view_kepids.append(kepid)
