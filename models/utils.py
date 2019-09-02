@@ -39,5 +39,5 @@ def load_model(path=None):
         return model
     except Exception as e:
         print(f'Error loading model from {path}')
-        print("loading error: e")
+        print("loading error: ", e)
         os._exit(-1)
