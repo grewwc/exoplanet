@@ -5,7 +5,7 @@ import numpy as np
 from clean_utils.normalization import norm_kepid
 import warnings
 
-warnings.filterwarnings('error')
+# warnings.filterwarnings('error')
 
 
 def get_more_features(columns=None, kepid=None):
