@@ -48,9 +48,9 @@ def _write_output():
         f.write(f'same / total:  {_same / _total * 100:.3f}%\n')
 
 
-def sig_handler(sig, frame):
-    _write_output()
-    os._exit(0)
+# def sig_handler(sig, frame):
+#     _write_output()
+#     os._exit(0)
 
 
 def _write_list(f, data_list):
@@ -80,7 +80,7 @@ def compare(threashhold=0.5):
     _all_fp = []
     _all_fn = []
 
-    signal.signal(signal.SIGINT, sig_handler)
+    # signal.signal(signal.SIGINT, sig_handler)
 
     for (kepid, plnt_num, pred_class) in __read_df(kepids_and_plnt):
         try:
@@ -108,7 +108,7 @@ def compare(threashhold=0.5):
             print(
                 f"{count}/{len(kepids_and_plnt)},  precision: {_same / _total * 100:.3f}%")
             count += 1
-        except:
+        except Exception as e:
             _wrong_local_view_kepids.append(kepid)
 
     _write_output()

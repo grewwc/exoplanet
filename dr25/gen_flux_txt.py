@@ -119,6 +119,7 @@ def write_dr25():
         np.savetxt('./temp_local.txt', local_flux, fmt='%.6f')
 
 
+
 def test_kepid(model, kepid, params=None, verbose=False,
                dr24=False):
     """

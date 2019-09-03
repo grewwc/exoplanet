@@ -92,17 +92,17 @@ def get_local_model():
     inputs = keras.layers.Input(shape=[201, 1])
     x = inputs
 
-    x = res_block(x, 8, 5, 2, local_name)
+    x = res_block(x, 8, 3, 2, local_name)
 
-    x = res_block(x, 16, 5, 2, local_name)
+    x = res_block(x, 16, 3, 2, local_name)
 
-    x = res_block(x, 32, 5, 2, local_name)
+    x = res_block(x, 32, 3, 2, local_name)
 
     x = res_block(x, 64, 5, 2, local_name)
 
-    x = res_block(x, 128, 7, 2, local_name)
-    x = res_block(x, 128, 7, 2, local_name)
-    x = res_block(x, 128, 7, 2, local_name)
+    x = res_block(x, 128, 5, 2, local_name)
+    x = res_block(x, 128, 5, 2, local_name)
+    x = res_block(x, 128, 5, 2, local_name)
 
     print(f"{res_block._count - 1} local res_blocks")
 

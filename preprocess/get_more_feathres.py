@@ -8,7 +8,7 @@ import warnings
 warnings.filterwarnings('error')
 
 
-def get_more_features(columns=None):
+def get_more_features(columns=None, kepid=None):
     if columns is None:
         columns = ['tce_period', 'tce_impact',
                    'tce_duration', 'tce_depth',
@@ -19,12 +19,14 @@ def get_more_features(columns=None):
     fname = os.path.join(csv_folder, csv_name_drop_unk)
     df24 = pd.read_csv(fname, comment='#')
     df24['norm_kepid'] = df24['kepid'].apply(norm_kepid)
+    if kepid is not None:
+        df24 = df24[df24['norm_kepid'] == norm_kepid(kepid)]
+
     df24['int_label'] = df24['av_training_set'].apply(
         lambda x: 1 if x == 'PC' else 0)
     df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
                      ascending=[False, True, True],
                      inplace=True)
-
     return df24[columns]
 
 
