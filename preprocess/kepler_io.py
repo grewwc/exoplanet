@@ -13,7 +13,7 @@ from clean_utils.log_utils import get_logger
 from clean_utils.normalization import norm_kepid
 from tools.decorators import load_ctx, save_ctx
 from utils.functions import *
-from get_more_feathres import get_more_features
+from .get_more_feathres import get_more_features
 
 # append kepler as python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
