@@ -159,8 +159,9 @@ def test_kepid(model, kepid, params=None, verbose=False,
             pred = None
 
             if test_feature is not None:
-                test_feature = test_feature.reshape(1, *test_feature.shape)
-                pred = model.predict([global_flux, local_flux, test_feature])
+                pred = model.predict([global_flux,
+                                      local_flux,
+                                      test_feature.reshape(1, *test_feature.shape)])
             else:
                 pred = model.predict([global_flux, local_flux])
 
