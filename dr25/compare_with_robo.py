@@ -81,6 +81,9 @@ def compare(threashhold=0.5):
     fp, fn = 0, 0
     count = 1
 
+    kepid_count = -1
+    prev_kepid = None
+
     _wrong_local_view_kepids = []
     _all_diff = []
     _all_fp = []
@@ -89,9 +92,11 @@ def compare(threashhold=0.5):
     # signal.signal(signal.SIGINT, sig_handler)
 
     for (kepid, plnt_num, pred_class) in __read_df(kepids_and_plnt):
+        if prev_kepid != kepid:
+            kepid_count += 1
         try:
             if kepid not in seen:
-                res = test_kepid(m, kepid, test_feature=feature_values[count - 1])
+                res = test_kepid(m, kepid, test_feature=feature_values[kepid_count])
                 seen[kepid] = res
 
             prob_of_pc = seen[kepid][plnt_num]
