@@ -37,7 +37,7 @@ def res_block(x, filters, kernel_size, strides=1, name=None):
         kernel_regularizer=keras.regularizers.l2(l2)
     )(y)
 
-    y = keras.layers.BatchNormalization()(y)
+    # y = keras.layers.BatchNormalization()(y)
     y = keras.layers.Activation('relu')(y)
 
     y = keras.layers.Conv1D(
@@ -52,7 +52,7 @@ def res_block(x, filters, kernel_size, strides=1, name=None):
         )(x)
     y = keras.layers.add([x, y])
 
-    y = keras.layers.BatchNormalization()(y)
+    # y = keras.layers.BatchNormalization()(y)
     y = keras.layers.Activation('relu', name=name)(y)
 
     return y
@@ -70,7 +70,7 @@ def get_global_model():
 
     x = res_block(x, 32, 3, 2, name=global_name)
 
-    x = res_block(x, 64, 5, 2, name=global_name)
+    x = res_block(x, 64, 3, 2, name=global_name)
 
     x = res_block(x, 128, 5, 2, name=global_name)
 
@@ -78,7 +78,7 @@ def get_global_model():
 
     x = res_block(x, 512, 5, 2, name=global_name)
 
-    x = keras.layers.AveragePooling1D(2)(x)
+    # x = keras.layers.AveragePooling1D(2)(x)
     # x = keras.layers.GlobalAveragePooling1D()(x)
     x = keras.layers.Flatten()(x)
     print(f"{res_block._count - 1} global res_blocks")
@@ -96,17 +96,13 @@ def get_local_model():
 
     x = res_block(x, 16, 3, 2, local_name)
 
-    x = res_block(x, 32, 3, 2, local_name)
+    x = res_block(x, 32, 5, 2, local_name)
 
     x = res_block(x, 64, 5, 2, local_name)
 
-    x = res_block(x, 128, 5, 2, local_name)
-    x = res_block(x, 128, 5, 2, local_name)
-    x = res_block(x, 128, 5, 2, local_name)
-
-    x = res_block(x, 256, 7, 2, local_name)
-    x = res_block(x, 256, 7, 2, local_name)
-    x = res_block(x, 256, 7, 2, local_name)
+    x = res_block(x, 128, 7, 2, local_name)
+    x = res_block(x, 128, 7, 2, local_name)
+    x = res_block(x, 128, 7, 2, local_name)
 
     print(f"{res_block._count - 1} local res_blocks")
 

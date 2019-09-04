@@ -91,7 +91,7 @@ def compare(threashhold=0.5):
     for (kepid, plnt_num, pred_class) in __read_df(kepids_and_plnt):
         try:
             if kepid not in seen:
-                res = test_kepid(m, kepid, feature_values[count - 1])
+                res = test_kepid(m, kepid, test_feature=feature_values[count - 1])
                 seen[kepid] = res
 
             prob_of_pc = seen[kepid][plnt_num]
