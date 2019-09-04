@@ -11,7 +11,8 @@ import math
 
 
 def almost_same(x, y):
-    return math.fabs(x - y) <= 1e-6
+    delta = 1e-2
+    return math.fabs(x - y) <= delta
 
 
 def main_tag(func):
