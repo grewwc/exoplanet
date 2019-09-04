@@ -94,6 +94,7 @@ def compare(threashhold=0.5):
     for (kepid, plnt_num, pred_class) in __read_df(kepids_and_plnt):
         if prev_kepid != kepid:
             kepid_count += 1
+            prev_kepid = kepid
         try:
             if kepid not in seen:
                 res = test_kepid(m, kepid, test_feature=feature_values[kepid_count])
