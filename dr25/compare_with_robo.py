@@ -115,6 +115,7 @@ def compare(threashhold=0.5):
                 f"{count}/{len(kepids_and_plnt)},  precision: {_same / _total * 100:.3f}%")
             count += 1
         except Exception as e:
+            print(e)
             _wrong_local_view_kepids.append(kepid)
 
     _write_output()
