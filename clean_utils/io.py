@@ -23,3 +23,14 @@ def get_features_and_labels():
     features = np.loadtxt(feature_file)
     labels = np.loadtxt(label_file)
     return features, labels
+
+
+def drop_unknown_label():
+    csv_path = os.path.join(csv_folder, csv_name)
+    csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk)
+    if os.path.exists(csv_clean_path):
+        return
+    data = pd.read_csv(csv_path, comment='#')
+    data = data[data['av_training_set'] != 'UNK']
+    data.dropna(axis=1, inplace=True)
+    data.to_csv(csv_clean_path, index=False)

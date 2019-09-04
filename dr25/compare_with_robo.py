@@ -1,4 +1,7 @@
 import pandas as pd
+from clean_utils.normalization import norm_features
+from preprocess.get_more_feathres import get_more_features
+
 from .gen_flux_txt import test_kepid
 from models.utils import load_model
 from os import path
@@ -62,6 +65,9 @@ def _write_list(f, data_list):
 def compare(threashhold=0.5):
     global _same, _total, _all_diff, _all_fp, _all_fn, _wrong_local_view_kepids
 
+    features = get_more_features()
+    feature_values = norm_features(features.values)
+
     fname = path.join(path.dirname(__file__), 'robo.csv')
     df = pd.read_csv(fname)
 
@@ -85,7 +91,7 @@ def compare(threashhold=0.5):
     for (kepid, plnt_num, pred_class) in __read_df(kepids_and_plnt):
         try:
             if kepid not in seen:
-                res = test_kepid(m, kepid)
+                res = test_kepid(m, kepid, feature_values[count - 1])
                 seen[kepid] = res
 
             prob_of_pc = seen[kepid][plnt_num]

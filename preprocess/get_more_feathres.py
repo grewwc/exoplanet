@@ -7,17 +7,30 @@ import warnings
 
 
 # warnings.filterwarnings('error')
+def drop_unknown_label():
+    csv_path = os.path.join(csv_folder, csv_name)
+    csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk)
+    if os.path.exists(csv_clean_path):
+        return
+    data = pd.read_csv(csv_path, comment='#')
+    data = data[data['av_training_set'] != 'UNK']
+    data.dropna(axis=1, inplace=True)
+    data.to_csv(csv_clean_path, index=False)
 
 
 def get_more_features(columns=None, kepid=None):
     if columns is None:
         columns = ['tce_period', 'tce_impact',
                    'tce_duration', 'tce_depth',
-                   'tce_ror', 'tce_num_transits',
+                   'tce_ror', 'tce_num_transits', 'tce_dor',
+                   'tce_incl', 'tce_ingress',
+                   'tce_eqt', 'tce_steff', 'tce_slogg',
                    'tce_model_snr', 'tce_model_chisq', 'tce_robstat',
                    'tce_prad', 'tce_sradius']
 
     fname = os.path.join(csv_folder, csv_name_drop_unk)
+    if not os.path.exists(fname):
+        drop_unknown_label()
     df24 = pd.read_csv(fname, comment='#')
     df24['norm_kepid'] = df24['kepid'].apply(norm_kepid)
     if kepid is not None:

@@ -156,8 +156,13 @@ def test_kepid(model, kepid, params=None, verbose=False,
             # reshape flux
             global_flux = global_flux.reshape(1, *global_flux.shape, 1)
             local_flux = local_flux.reshape(1, *local_flux.shape, 1)
-            # return global_flux, local_flux
-            pred = model.predict([global_flux, local_flux])
+            pred = None
+            if test_feature is not None:
+                test_feature = test_feature.reshape(1, *test_feature.shape)
+                pred = model.predict([global_flux, local_flux, test_feature])
+            else:
+                pred = model.predict([global_flux, local_flux])
+
             summary[planet_num] = pred[0][1]
     else:
         period, t0, duration = [float(x) for x in params]
