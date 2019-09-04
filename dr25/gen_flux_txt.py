@@ -1,6 +1,6 @@
 from config import *
-sys.path.append(root_dir)
 
+sys.path.append(root_dir)
 
 import sys
 import os
@@ -8,10 +8,8 @@ import pandas as pd
 from utils.functions import *
 from clean_utils.normalization import norm_kepid
 
-
 df = None
 df24 = None
-
 
 from preprocess.kepler_io import *
 
@@ -76,7 +74,7 @@ def write_dr25():
 
         period_list = info['tce_period']
         t0_list = info['tce_time0bk']
-        duration_list = [d/24.0 for d in info['tce_duration']]
+        duration_list = [d / 24.0 for d in info['tce_duration']]
 
         count += 1
         print(f"{count}/{total}")
@@ -119,9 +117,8 @@ def write_dr25():
         np.savetxt('./temp_local.txt', local_flux, fmt='%.6f')
 
 
-
 def test_kepid(model, kepid, params=None, verbose=False,
-               dr24=False):
+               dr24=False, test_feature=None):
     """
     if params is not None, duration is in Hours
     """
@@ -129,12 +126,12 @@ def test_kepid(model, kepid, params=None, verbose=False,
     info = get_info_by_ID(kepid, get_planet=True, dr24=dr24)
     period_list = info['tce_period']
     t0_list = info['tce_time0bk']
-    duration_list = [d/24.0 for d in info['tce_duration']]
+    duration_list = [d / 24.0 for d in info['tce_duration']]
     planet_nums = info['tce_plnt_num']
     summary = {}
     total = len(period_list)
     if params is None:
-        for i, (period, t0, duration, planet_num) in\
+        for i, (period, t0, duration, planet_num) in \
                 enumerate(zip(
                     period_list,
                     t0_list,
@@ -142,7 +139,7 @@ def test_kepid(model, kepid, params=None, verbose=False,
                     planet_nums
                 )):
             if verbose:
-                write_info(f'loading {i+1}/{total}')
+                write_info(f'loading {i + 1}/{total}')
 
             time, flux = remove_points_other_tce(
                 time, flux, period, period_list,
@@ -192,6 +189,7 @@ def find_very_short_period(threshold=1e-4):
     df = df[['kepid', 'tce_period', 'tce_duration']]
 
     def func(row): return float(row['tce_duration']) / \
-        float(row['tce_period']) < threshold
+                          float(row['tce_period']) < threshold
+
     short = df.apply(func, axis=1)
     return df[short]

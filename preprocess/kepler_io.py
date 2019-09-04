@@ -914,10 +914,10 @@ def write_global_and_local_PC():
             list(map(lambda label: 1 if label == 'PC' else 0, labels))
         # transfer labels to 0/1 (integer)
 
-        remove_indices = [i for i, label in enumerate(labels)
-                          if label == 1]
+        # remove_indices = [i for i, label in enumerate(labels)
+        #                   if label == 1]
 
-        # remove_indices = [i for i, label in enumerate(labels)]
+        remove_indices = [i for i, label in enumerate(labels)]
 
         remove_periods = [periods[i] for i in remove_indices]
         remove_t0s = [t0s[i] for i in remove_indices]
@@ -980,6 +980,7 @@ def write_global_and_local_PC():
 
 # not finished
 def get_features_by_id(kepid):
+    """TODO"""
     features = get_more_features(kepid=kepid)
     print(features)
 

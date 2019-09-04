@@ -2,8 +2,9 @@ from config import *
 import os
 import pandas as pd
 import numpy as np
-from clean_utils.normalization import norm_kepid
+from clean_utils.normalization import norm_kepid, norm_features
 import warnings
+
 
 # warnings.filterwarnings('error')
 
@@ -51,19 +52,9 @@ def write_more_features(columns=None):
     labels = list(map(lambda label: 1 if label == 'PC' else 0, labels))
     labels = np.array(labels).astype(np.int)
     # print(features.values)
-    values = _normalize(features.values)
+    values = norm_features(features.values)
     np.savetxt(feature_file, values, fmt="%.6f")
     np.savetxt(label_file, labels)
-
-
-def _normalize(values):
-    mean = np.mean(values, axis=0)
-    std = np.std(values, axis=0)
-    try:
-        values = (values - mean) / std
-    except Warning as e:
-        print(e, std)
-    return values
 
 
 if __name__ == '__main__':
