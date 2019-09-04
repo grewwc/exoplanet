@@ -22,18 +22,23 @@ def check():
     df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
                      ascending=[False, True, True],
                      inplace=True)
-    count_kepid = 0
+    count_kepid = -1
 
-    kepids = set(df24['kepid'])
+    kepids = df24['kepid'].values
+    prev_kepid = None
     count, total = 1, len(kepids)
     diff_count = 0
     processed = 0
     with open('diff_kepid.txt', 'w') as f:
         with open('unk_kepid.txt', 'w') as f_unk:
             for kepid in kepids:
+                if prev_kepid != kepid:
+                    count_kepid += 1
+                    prev_kepid = kepid
+
                 res = test_kepid(m, kepid, dr24=1,
                                  test_feature=feature_values[count_kepid])
-                count_kepid += 1
+
                 sub_df = df24[df24['kepid'] == int(kepid)]
                 for plnt, prob in res.items():
                     cls = sub_df[sub_df['tce_plnt_num'] == int(
