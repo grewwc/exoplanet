@@ -65,7 +65,7 @@ def _write_list(f, data_list):
 def compare(threashhold=0.5):
     global _same, _total, _all_diff, _all_fp, _all_fn, _wrong_local_view_kepids
 
-    features = get_more_features()
+    features = get_more_features(dr24=False)
     feature_values = norm_features(features.values)
 
     fname = path.join(path.dirname(__file__), 'robo.csv')

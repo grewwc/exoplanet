@@ -21,7 +21,7 @@ def check():
 
     df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
                      ascending=[False, True, True],
-                     inplace=True)
+                     inplace=True, kind='mergesort')
     count_kepid = -1
 
     kepids = df24['kepid'].values
@@ -43,19 +43,21 @@ def check():
                 for plnt, prob in res.items():
                     cls = sub_df[sub_df['tce_plnt_num'] == int(
                         plnt)]['av_training_set'].values[0]
-                    if cls == 'PC' and prob > 0.5 \
-                            or cls != 'PC' and cls != 'UNK' and prob < 0.5:
-                        # right += 1
-                        processed += 1
-                    elif cls != 'UNK':
-                        processed += 1
+
+                    if cls == 'UNK':
+                        print(f'{kepid}-{plnt} prob: {prob}',
+                              file=f_unk)
+                        continue
+
+                    processed += 1
+                    if (cls == 'PC' and prob < 0.5) \
+                            or (cls != 'PC' and prob > 0.5):
+                        # predict wrongly
                         diff_count += 1
                         print(f'diff rate: {diff_count / processed:.3f}')
                         print(f'{kepid}-{plnt} prob: {prob}',
                               file=f)
-                    else:
-                        print(f'{kepid}-{plnt} prob: {prob}',
-                              file=f_unk)
+                        continue
 
                 print(f'{count}/{total}')
                 count += 1

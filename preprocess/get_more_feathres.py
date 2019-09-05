@@ -7,9 +7,14 @@ import warnings
 
 
 # warnings.filterwarnings('error')
-def drop_unknown_label():
-    csv_path = os.path.join(csv_folder, csv_name)
-    csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk)
+def drop_unknown_label(dr24=True):
+    if dr24:
+        csv_path = os.path.join(csv_folder, csv_name)
+        csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk)
+    else:
+        csv_path = os.path.join(csv_folder, csv_name_25)
+        csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk_25)
+
     if os.path.exists(csv_clean_path):
         return
     data = pd.read_csv(csv_path, comment='#')
@@ -18,7 +23,7 @@ def drop_unknown_label():
     data.to_csv(csv_clean_path, index=False)
 
 
-def get_more_features(columns=None, kepid=None):
+def get_more_features(columns=None, kepid=None, dr24=True):
     if columns is None:
         columns = ['tce_period', 'tce_impact',
                    'tce_duration', 'tce_depth',
@@ -27,10 +32,14 @@ def get_more_features(columns=None, kepid=None):
                    'tce_eqt', 'tce_steff', 'tce_slogg',
                    'tce_model_snr', 'tce_model_chisq', 'tce_robstat',
                    'tce_prad', 'tce_sradius']
+    if dr24:
+        fname = os.path.join(csv_folder, csv_name_drop_unk)
+    else:
+        fname = os.path.join(csv_folder, csv_name_drop_unk_25)
 
-    fname = os.path.join(csv_folder, csv_name_drop_unk)
     if not os.path.exists(fname):
-        drop_unknown_label()
+        drop_unknown_label(dr24=dr24)
+
     df24 = pd.read_csv(fname, comment='#')
     df24['norm_kepid'] = df24['kepid'].apply(norm_kepid)
     if kepid is not None:
@@ -40,7 +49,7 @@ def get_more_features(columns=None, kepid=None):
         lambda x: 1 if x == 'PC' else 0)
     df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
                      ascending=[False, True, True],
-                     inplace=True)
+                     inplace=True, kind='mergesort')
     return df24[columns]
 
 
