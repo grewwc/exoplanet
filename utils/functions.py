@@ -170,8 +170,7 @@ def flatten_interp_transits(
     tce_time, tce = all_time[mask], all_flux[mask]
 
     lc = LightCurve(all_time, all_flux).flatten(
-        window_length=401, polyorder=2, break_tolerance=40, sigma=3,
-        niters=5,
+        window_length=801, polyorder=2, break_tolerance=40, sigma=3
     )
 
     all_time, flat_flux = lc.time, lc.flux
