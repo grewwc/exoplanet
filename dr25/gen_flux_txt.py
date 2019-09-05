@@ -1,15 +1,14 @@
 from config import *
+from preprocess.get_more_feathres import get_more_features
 
 sys.path.append(root_dir)
 
-import sys
-import os
-import pandas as pd
-from utils.functions import *
-from clean_utils.normalization import norm_kepid
+from clean_utils.normalization import norm_features
 
 df = None
 df24 = None
+
+__all_features = None
 
 from preprocess.kepler_io import *
 
@@ -28,7 +27,7 @@ def get_info_by_ID(kepid=None, get_planet=False, dr24=False):
     else:
         if df24 is None:
             df24 = pd.read_csv(
-                os.path.join(csv_folder, csv_name),
+                os.path.join(csv_folder, csv_name_drop_unk),
                 comment='#'
             )
         df = df24
@@ -122,8 +121,19 @@ def test_kepid(model, kepid, params=None, verbose=False,
     """
     if params is not None, duration is in Hours
     """
+
     time, flux = get_time_flux_by_ID(kepid)
     info = get_info_by_ID(kepid, get_planet=True, dr24=dr24)
+
+    if test_feature is None:
+        global __all_features
+        # generate test_feature
+        if __all_features is None:
+            __all_features = get_more_features(dr24=dr24)
+        values = norm_features(__all_features.values)
+        idx = df[df['kepid'] == int(kepid)].index[0]
+        test_feature = values[idx]
+
     period_list = info['tce_period']
     t0_list = info['tce_time0bk']
     duration_list = [d / 24.0 for d in info['tce_duration']]
@@ -156,16 +166,13 @@ def test_kepid(model, kepid, params=None, verbose=False,
             # reshape flux
             global_flux = global_flux.reshape(1, *global_flux.shape, 1)
             local_flux = local_flux.reshape(1, *local_flux.shape, 1)
-            pred = None
 
-            if test_feature is not None:
-                pred = model.predict([global_flux,
-                                      local_flux,
-                                      test_feature.reshape(1, *test_feature.shape)])
-            else:
-                pred = model.predict([global_flux, local_flux])
+            pred = model.predict([global_flux,
+                                  local_flux,
+                                  test_feature.reshape(1, *test_feature.shape)])
 
             summary[planet_num] = pred[0][1]
+
     else:
         period, t0, duration = [float(x) for x in params]
         duration /= 24.0

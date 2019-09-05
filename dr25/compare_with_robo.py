@@ -65,9 +65,6 @@ def _write_list(f, data_list):
 def compare(threashhold=0.5):
     global _same, _total, _all_diff, _all_fp, _all_fn, _wrong_local_view_kepids
 
-    features = get_more_features(dr24=False)
-    feature_values = norm_features(features.values)
-
     fname = path.join(path.dirname(__file__), 'robo.csv')
     df = pd.read_csv(fname)
 
@@ -81,8 +78,8 @@ def compare(threashhold=0.5):
     fp, fn = 0, 0
     count = 1
 
-    kepid_count = -1
-    prev_kepid = None
+    # kepid_count = -1
+    # prev_kepid = None
 
     _wrong_local_view_kepids = []
     _all_diff = []
@@ -92,12 +89,12 @@ def compare(threashhold=0.5):
     # signal.signal(signal.SIGINT, sig_handler)
 
     for (kepid, plnt_num, pred_class) in __read_df(kepids_and_plnt):
-        if prev_kepid != kepid:
-            kepid_count += 1
-            prev_kepid = kepid
+        # if prev_kepid != kepid:
+        #     kepid_count += 1
+        #     prev_kepid = kepid
         try:
             if kepid not in seen:
-                res = test_kepid(m, kepid, test_feature=feature_values[kepid_count])
+                res = test_kepid(m, kepid)
                 seen[kepid] = res
 
             prob_of_pc = seen[kepid][plnt_num]

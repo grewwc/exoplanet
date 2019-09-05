@@ -14,15 +14,15 @@ def check():
     m = load_model()
     fname = os.path.join(csv_folder, csv_name)
     df24 = pd.read_csv(fname, comment='#')
-    df24['norm_kepid'] = df24['kepid'].apply(norm_kepid)
-
-    df24['int_label'] = df24['av_training_set'].apply(
-        lambda x: 1 if x == 'PC' else 0)
-
-    df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
-                     ascending=[False, True, True],
-                     inplace=True, kind='mergesort')
-    count_kepid = -1
+    # df24['norm_kepid'] = df24['kepid'].apply(norm_kepid)
+    #
+    # df24['int_label'] = df24['av_training_set'].apply(
+    #     lambda x: 1 if x == 'PC' else 0)
+    #
+    # df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
+    #                  ascending=[False, True, True],
+    #                  inplace=True, kind='mergesort')
+    # count_kepid = -1
 
     kepids = df24['kepid'].values
     prev_kepid = None
@@ -32,12 +32,11 @@ def check():
     with open('diff_kepid.txt', 'w') as f:
         with open('unk_kepid.txt', 'w') as f_unk:
             for kepid in kepids:
-                if prev_kepid != kepid:
-                    count_kepid += 1
-                    prev_kepid = kepid
+                # if prev_kepid != kepid:
+                #     count_kepid += 1
+                #     prev_kepid = kepid
 
-                res = test_kepid(m, kepid, dr24=1,
-                                 test_feature=feature_values[count_kepid])
+                res = test_kepid(m, kepid, dr24=True)
 
                 sub_df = df24[df24['kepid'] == int(kepid)]
                 for plnt, prob in res.items():
