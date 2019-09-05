@@ -45,11 +45,17 @@ def get_more_features(columns=None, kepid=None, dr24=True):
     if kepid is not None:
         df24 = df24[df24['norm_kepid'] == norm_kepid(kepid)]
 
-    df24['int_label'] = df24['av_training_set'].apply(
-        lambda x: 1 if x == 'PC' else 0)
-    df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
-                     ascending=[False, True, True],
-                     inplace=True, kind='mergesort')
+    if dr24:
+        df24['int_label'] = df24['av_training_set'].apply(
+            lambda x: 1 if x == 'PC' else 0
+        )
+        df24.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
+                         ascending=[False, True, True],
+                         inplace=True, kind='mergesort')
+    else:
+        df24.sort_values(by=['norm_kepid', 'tce_plnt_num'],
+                         ascending=[True, True],
+                         inplace=True, kind='mergesort')
     return df24[columns]
 
 
