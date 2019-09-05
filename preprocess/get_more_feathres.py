@@ -35,10 +35,10 @@ def get_more_features(columns=None, kepid=None, dr24=True):
     if dr24:
         fname = os.path.join(csv_folder, csv_name_drop_unk)
     else:
-        fname = os.path.join(csv_folder, csv_name_drop_unk_25)
+        fname = os.path.join(csv_folder, csv_name_25)
 
     if not os.path.exists(fname):
-        drop_unknown_label(dr24=dr24)
+        drop_unknown_label()
 
     df24 = pd.read_csv(fname, comment='#')
     df24['norm_kepid'] = df24['kepid'].apply(norm_kepid)
