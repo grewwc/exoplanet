@@ -20,6 +20,7 @@ def check():
 
     kepids = set(df24['kepid'].values)
     prev_kepid = None
+
     count, total = 1, len(df24)
     diff_count = 0
     processed = 0

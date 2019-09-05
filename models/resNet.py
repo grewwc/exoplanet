@@ -67,19 +67,31 @@ def get_global_model():
     x = inputs
 
     x = res_block(x, 16, 3, 2, name=global_name)
+    x = res_block(x, 16, 3, 1, name=global_name)
+    x = res_block(x, 16, 3, 1, name=global_name)
 
     x = res_block(x, 32, 3, 2, name=global_name)
+    x = res_block(x, 32, 3, 1, name=global_name)
+    x = res_block(x, 32, 3, 1, name=global_name)
 
-    x = res_block(x, 64, 5, 2, name=global_name)
+    x = res_block(x, 64, 3, 2, name=global_name)
+    x = res_block(x, 64, 3, 1, name=global_name)
+    x = res_block(x, 64, 3, 1, name=global_name)
 
-    x = res_block(x, 128, 5, 2, name=global_name)
+    x = res_block(x, 128, 3, 2, name=global_name)
+    x = res_block(x, 128, 3, 1, name=global_name)
+    x = res_block(x, 128, 3, 1, name=global_name)
 
-    x = res_block(x, 256, 7, 2, name=global_name)
-
-    x = res_block(x, 512, 7, 2, name=global_name)
+    x = res_block(x, 256, 3, 2, name=global_name)
+    x = res_block(x, 256, 3, 1, name=global_name)
+    x = res_block(x, 256, 3, 1, name=global_name)
+    #
+    # x = res_block(x, 512, 3, 2, name=global_name)
+    # x = res_block(x, 512, 3, 1, name=global_name)
+    # x = res_block(x, 512, 3, 1, name=global_name)
 
     # x = keras.layers.AveragePooling1D(2)(x)
-    # x = keras.layers.GlobalAveragePooling1D()(x)
+    x = keras.layers.GlobalAveragePooling1D()(x)
     x = keras.layers.Flatten()(x)
     print(f"{res_block._count - 1} global res_blocks")
     return keras.models.Model(inputs=inputs, outputs=x)
@@ -92,25 +104,27 @@ def get_local_model():
     inputs = keras.layers.Input(shape=[201, 1])
     x = inputs
 
-    x = res_block(x, 8, 3, 2, local_name)
-
     x = res_block(x, 16, 3, 2, local_name)
+    x = res_block(x, 16, 3, 1, local_name)
+    x = res_block(x, 16, 3, 1, local_name)
 
-    x = res_block(x, 32, 5, 2, local_name)
+    x = res_block(x, 32, 3, 2, local_name)
+    x = res_block(x, 32, 3, 1, local_name)
+    x = res_block(x, 32, 3, 1, local_name)
 
-    x = res_block(x, 64, 5, 2, local_name)
+    x = res_block(x, 64, 3, 2, local_name)
+    x = res_block(x, 64, 3, 1, local_name)
+    x = res_block(x, 64, 3, 1, local_name)
 
-    x = res_block(x, 128, 5, 2, local_name)
-
-    x = res_block(x, 256, 7, 2, local_name)
-    x = res_block(x, 256, 7, 2, local_name)
-    x = res_block(x, 256, 7, 2, local_name)
+    x = res_block(x, 128, 3, 2, local_name)
+    x = res_block(x, 128, 3, 1, local_name)
+    x = res_block(x, 128, 3, 1, local_name)
 
 
     print(f"{res_block._count - 1} local res_blocks")
 
     # x = keras.layers.AveragePooling1D(2)(x)
-    # x = keras.layers.GlobalAveragePooling1D()(x)
+    x = keras.layers.GlobalAveragePooling1D()(x)
     x = keras.layers.Flatten()(x)
 
     return keras.models.Model(inputs=inputs, outputs=x)

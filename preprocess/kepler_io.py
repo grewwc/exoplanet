@@ -891,6 +891,14 @@ def write_global_and_local_PC():
     df_clean['tce_duration'] = df_clean['tce_duration'] / 24.0
     # hours to days
 
+    df_clean['int_label'] = df_clean['av_training_set'].apply(
+        lambda x: 1 if x == 'PC' else 0
+    )
+
+    df_clean.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
+                         ascending=[False, True, True],
+                         inplace=True, kind='mergesort')
+
     result = []
     kepids = list(set(df_clean['kepid'].values))
 
@@ -901,8 +909,6 @@ def write_global_and_local_PC():
     for kepid in kepids:
         time, flux = get_time_flux_by_ID(kepid)
         targets = df_clean[df_clean['kepid'] == kepid]
-        targets = targets.sort_values(by='tce_plnt_num')
-        # then sort by planet number
 
         plnt_nums, labels, periods, t0s, durations = \
             targets[['tce_plnt_num', 'av_training_set',
@@ -975,6 +981,3 @@ def write_global_and_local_PC():
 
     pool.join()
     write_file_process.join()
-
-
-

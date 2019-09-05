@@ -8,7 +8,7 @@ from clean_utils.normalization import norm_features
 df = None
 df24 = None
 
-__all_features = None
+__norm_features = None
 
 from preprocess.kepler_io import *
 
@@ -126,13 +126,13 @@ def test_kepid(model, kepid, params=None, verbose=False,
     info = get_info_by_ID(kepid, get_planet=True, dr24=dr24)
 
     if test_feature is None:
-        global __all_features
+        global __norm_features
         # generate test_feature
-        if __all_features is None:
-            __all_features = get_more_features(dr24=dr24)
-        values = norm_features(__all_features.values)
+        if __norm_features is None:
+            all_features = get_more_features(dr24=dr24)
+            __norm_features = norm_features(all_features.values)
         idx = df[df['kepid'] == int(kepid)].index[0]
-        test_feature = values[idx]
+        test_feature = __norm_features[idx]
 
     period_list = info['tce_period']
     t0_list = info['tce_time0bk']
