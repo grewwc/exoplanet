@@ -298,7 +298,7 @@ def load_local_view(train_ratio=0.9):
     yield (train_x, train_y), (test_x, test_y)
 
 
-def load_data(train_ratio=0.9, more_features=None):
+def load_data(train_ratio=0.9, more_features=False):
     # main function
     """
     returns:

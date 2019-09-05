@@ -126,13 +126,7 @@ def test_kepid(model, kepid, params=None, verbose=False,
     info = get_info_by_ID(kepid, get_planet=True, dr24=dr24)
 
     if test_feature is None:
-        global __norm_features
-        # generate test_feature
-        if __norm_features is None:
-            all_features = get_more_features(dr24=dr24)
-            __norm_features = norm_features(all_features.values)
-        idx = df[df['kepid'] == int(kepid)].index[0]
-        test_feature = __norm_features[idx]
+        test_feature = get_features_by_ID(kepid)
 
     period_list = info['tce_period']
     t0_list = info['tce_time0bk']

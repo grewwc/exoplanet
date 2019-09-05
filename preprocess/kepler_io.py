@@ -10,7 +10,9 @@ from itertools import chain, repeat
 import pandas as pd
 from astropy.io import fits
 from clean_utils.log_utils import get_logger
-from clean_utils.normalization import norm_kepid
+from clean_utils.normalization import norm_kepid, norm_features
+from clean_utils.sorting import sort_df
+from preprocess.get_more_feathres import get_more_features
 from tools.decorators import load_ctx, save_ctx
 from utils.functions import *
 
@@ -19,10 +21,11 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
 kepid = 'kepid'
 
+__norm_features = None
 Item = namedtuple('Item', "kepid, plnt_num, label, is_global, data")
 
 df = None
-df_clean = None
+__df_clean = None
 
 _float_fmt = '%.6f'
 
@@ -166,15 +169,15 @@ def get_PC_IDs(num=1, shuffle=True, nth=1):
     """
     if num == np.inf, return all (default 1)
     """
-    global df_clean
+    global __df_clean
     csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk)
     # if no cleaned csv file (with UNK label dropped), create one
     if not os.path.exists(csv_clean_path):
         drop_unknown_label()
 
-    if df_clean is None:
-        df_clean = pd.read_csv(csv_clean_path, comment='#')
-    all_ids = set(df_clean[df_clean['av_training_set'] == 'PC']['kepid'])
+    if __df_clean is None:
+        __df_clean = pd.read_csv(csv_clean_path, comment='#')
+    all_ids = set(__df_clean[__df_clean['av_training_set'] == 'PC']['kepid'])
     all_ids = [f'{int(id_):09d}' for id_ in all_ids]
     if shuffle:
         random.shuffle(all_ids)
@@ -191,17 +194,17 @@ def get_NonPC_IDs(num=1, shuffle=True, nth=1):
     """
     if num == np.inf, return all (default 1)
     """
-    global df_clean
+    global __df_clean
     csv_clean_path = os.path.join(csv_folder, csv_name_drop_unk)
     # if no cleaned csv file (with UNK label dropped), create one
     if not os.path.exists(csv_clean_path):
         drop_unknown_label()
 
-    if df_clean is None:
-        df_clean = pd.read_csv(csv_clean_path, comment='#')
+    if __df_clean is None:
+        __df_clean = pd.read_csv(csv_clean_path, comment='#')
 
-    training_set = df_clean['av_training_set']
-    all_ids = set(df_clean[training_set != 'PC']['kepid'].values)
+    training_set = __df_clean['av_training_set']
+    all_ids = set(__df_clean[training_set != 'PC']['kepid'].values)
     # all_pcs = set(df_clean[training_set == 'PC']['kepid'].values)
 
     # all_ids = all_ids
@@ -825,6 +828,23 @@ def get_unknown_kepids():
     return list(df[df[col_name] == unknown][kepid].values)
 
 
+def get_features_by_ID(kepid, dr24=True):
+    global __norm_features, __df_clean
+    # generate test_feature
+    if __norm_features is None:
+        all_features = get_more_features(dr24=dr24)
+        __norm_features = norm_features(all_features.values)
+    if __df_clean is None:
+        __df_clean = pd.read_csv(
+            os.path.join(csv_folder, csv_name_drop_unk),
+            comment='#')
+        __df_clean = sort_df(__df_clean)
+
+    idx = __df_clean[__df_clean['kepid'] == int(kepid)].index[0]
+    features = __norm_features[idx]
+    return features
+
+
 def __write_file(queue: mp.Queue):
     sentinel = '0' * 9
     while True:
@@ -892,14 +912,7 @@ def write_global_and_local_PC():
     df_clean['tce_duration'] = df_clean['tce_duration'] / 24.0
     # hours to days
 
-    df_clean['norm_kepid'] = df_clean['kepid'].apply(norm_kepid)
-    df_clean['int_label'] = df_clean['av_training_set'].apply(
-        lambda x: 1 if x == 'PC' else 0
-    )
-
-    df_clean.sort_values(by=['int_label', 'norm_kepid', 'tce_plnt_num'],
-                         ascending=[False, True, True],
-                         inplace=True, kind='mergesort')
+    sort_df(df_clean)
 
     result = []
     kepids = list(set(df_clean['kepid'].values))

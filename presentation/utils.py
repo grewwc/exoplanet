@@ -29,7 +29,7 @@ def auto_block(model, kepid, block_size=50):
         test_feature = __norm_features[idx]
 
     if __global_flux is None:
-        time, flux = get_time_flux_by_ID(keipd)
+        time, flux = get_time_flux_by_ID(kepid)
 
 
     begin = 0
