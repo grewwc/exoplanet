@@ -888,9 +888,11 @@ def write_global_and_local_PC():
 
     fname = os.path.join(csv_folder, csv_name_drop_unk)
     df_clean = pd.read_csv(fname, comment='#')
+
     df_clean['tce_duration'] = df_clean['tce_duration'] / 24.0
     # hours to days
 
+    df_clean['norm_kepid'] = df_clean['kepid'].apply(norm_kepid)
     df_clean['int_label'] = df_clean['av_training_set'].apply(
         lambda x: 1 if x == 'PC' else 0
     )
