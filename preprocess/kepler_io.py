@@ -831,13 +831,18 @@ def get_unknown_kepids():
 def get_features_by_ID(kepid, dr24=True):
     global __norm_features, __df_clean
     # generate test_feature
+
+    fname = None
+    if dr24:
+        fname = os.path.join(csv_folder, csv_name_drop_unk)
+    else:
+        fname = os.path.join(csv_folder, csv_name_25)
+
     if __norm_features is None:
         all_features = get_more_features(dr24=dr24)
         __norm_features = norm_features(all_features.values)
     if __df_clean is None:
-        __df_clean = pd.read_csv(
-            os.path.join(csv_folder, csv_name_drop_unk),
-            comment='#')
+        __df_clean = pd.read_csv(fname, comment='#')
         __df_clean = sort_df(__df_clean)
 
     idx = __df_clean[__df_clean['kepid'] == int(kepid)].index[0]
