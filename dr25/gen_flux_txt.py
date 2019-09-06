@@ -126,7 +126,7 @@ def test_kepid(model, kepid, params=None, verbose=False,
     info = get_info_by_ID(kepid, get_planet=True, dr24=dr24)
 
     if test_feature is None:
-        test_feature = get_features_by_ID(kepid)
+        test_feature = get_features_by_ID(kepid, dr24=dr24)
 
     period_list = info['tce_period']
     t0_list = info['tce_time0bk']
