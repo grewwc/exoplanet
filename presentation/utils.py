@@ -5,8 +5,7 @@ import pandas as pd
 from config import *
 from preprocess.kepler_io import *
 
-
-__global_flux, __local_flux, __norm_feature = None, None, None
+__global_flux, __local_flux, __norm_features = None, None, None
 
 
 def block(global_flux, lo, hi):
@@ -19,24 +18,30 @@ def block(global_flux, lo, hi):
 
 
 def auto_block(model, kepid, block_size=50):
-    if __norm_feature is None:
-        global __feature
+    global __global_flux, __local_flux, __norm_features
+
+    if __norm_features is None:
         # generate test_feature
         all_features = get_more_features(dr24=True)
         __norm_features = norm_features(all_features.values)
-        df = pd.read_csv(csv_folder, csv_name_drop_unk)
-        idx = df[df['kepid'] == int(kepid)].index[0]
-        test_feature = __norm_features[idx]
+
+    df = pd.read_csv(csv_folder, csv_name_drop_unk)
+    idx = df[df['kepid'] == int(kepid)].index[0]
+    test_feature = __norm_features[idx]
 
     if __global_flux is None:
-        time, flux = get_time_flux_by_ID(kepid)
+        __global_flux = get_binned_normalized_flux_by_IDs(kepid, overwrite=False)
 
+    if __local_flux is None:
+        __local_flux = get_binned_local_view_by_IDs(kepid, overwrite=True)
 
     begin = 0
-    end = len(global_flux)
+    end = len(__global_flux)
     lo = begin
     hi = lo + block_size
 
     while hi <= end:
-        flux = block(global_flux, lo, hi)
-        pc_prob = model.predict([global_flux, local_flux, test_feature])
+        flux = block(__global_flux, lo, hi)
+        pc_prob = model.predict([flux, __local_flux, test_feature])
+        print(pc_prob)
+        lo, hi = hi, hi + block_size

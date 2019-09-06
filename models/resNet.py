@@ -31,14 +31,15 @@ def res_block(x, filters, kernel_size, strides=1, name=None):
     strides != 1 res block should be put into the last layer
     """
     y = x
-    l2 = 1e-4
+    l2 = 5e-5
     y = keras.layers.Conv1D(
         filters, kernel_size, strides=strides, padding='same',
         kernel_regularizer=keras.regularizers.l2(l2)
     )(y)
 
     # y = keras.layers.BatchNormalization()(y)
-    # y = keras.layers.Activation('relu')(y)
+
+    y = keras.layers.Activation('relu')(y)
 
     y = keras.layers.Conv1D(
         filters, kernel_size, strides=1, padding='same',
@@ -67,18 +68,22 @@ def get_global_model():
     x = inputs
 
     x = res_block(x, 16, 3, 2, name=global_name)
+    x = res_block(x, 16, 3, 2, name=global_name)
 
+    x = res_block(x, 32, 3, 2, name=global_name)
     x = res_block(x, 32, 3, 2, name=global_name)
 
     x = res_block(x, 64, 5, 2, name=global_name)
+    x = res_block(x, 64, 5, 2, name=global_name)
 
+    x = res_block(x, 128, 5, 2, name=global_name)
     x = res_block(x, 128, 5, 2, name=global_name)
 
     x = res_block(x, 256, 5, 2, name=global_name)
 
     x = res_block(x, 512, 5, 2, name=global_name)
 
-    x = keras.layers.AveragePooling1D(2)(x)
+    # x = keras.layers.AveragePooling1D(2)(x)
     # x = keras.layers.GlobalAveragePooling1D()(x)
     x = keras.layers.Flatten()(x)
     print(f"{res_block._count - 1} global res_blocks")
@@ -103,6 +108,7 @@ def get_local_model():
     x = res_block(x, 128, 7, 2, local_name)
     x = res_block(x, 128, 7, 2, local_name)
     x = res_block(x, 128, 7, 2, local_name)
+
 
     print(f"{res_block._count - 1} local res_blocks")
 
